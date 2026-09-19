@@ -7,7 +7,7 @@
   <title>في ذكرى رحيل والدي الحاج محمد غياث صمادي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   
   <style>
     * {
@@ -135,61 +135,85 @@
       color: #f3f4f6;
     }
 
-    .dua-section {
-      background: rgba(212, 175, 55, 0.06);
-      border: 1px dashed rgba(212, 175, 55, 0.35);
+    /* تصميم المسبحة الإلكترونية */
+    .tasbeeh-container {
+      background: linear-gradient(145deg, #161922, #0b0d12);
+      border: 2px solid rgba(212, 175, 55, 0.4);
       padding: 25px 20px;
-      border-radius: 16px;
-      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      max-width: 400px;
+      margin: 0 auto;
     }
 
-    .dua-title {
-      color: #d4af37;
-      font-size: 1.2rem;
-      margin-bottom: 12px;
-      font-weight: 600;
+    .tasbeeh-screen {
+      background: #05070a;
+      border: 2px inset rgba(212, 175, 55, 0.3);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
     }
 
-    .dua-btn {
-      background: linear-gradient(135deg, #c59b27, #8a6d1b);
-      color: #fff;
+    .tasbeeh-label {
+      color: #9ca3af;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
+    .tasbeeh-display {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 3.2rem;
+      color: #f59e0b;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .tasbeeh-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .count-btn {
+      background: linear-gradient(135deg, #d4af37, #9a7b22);
+      color: #000;
       border: none;
-      padding: 14px 32px;
-      font-size: 1.1rem;
+      padding: 14px 28px;
+      font-size: 1.15rem;
       font-family: "Cairo", sans-serif;
-      border-radius: 30px;
+      font-weight: 700;
+      border-radius: 35px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-      margin-top: 10px;
-      transition: all 0.2s ease;
+      box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+      flex: 2;
+      transition: all 0.1s ease;
       user-select: none;
     }
 
-    .dua-btn:active {
+    .count-btn:active {
       transform: scale(0.95);
+      background: linear-gradient(135deg, #c29f2f, #82661c);
     }
 
-    .dua-counters-box {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .dua-count-text {
+    .reset-btn {
+      background: rgba(255, 255, 255, 0.08);
       color: #9ca3af;
-      font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      font-family: "Cairo", sans-serif;
+      border-radius: 35px;
+      cursor: pointer;
+      flex: 1;
+      transition: all 0.2s ease;
     }
 
-    .dua-count-num {
-      color: #d4af37;
-      font-size: 1.4rem;
-      font-weight: bold;
-    }
-    
-    .personal-count-num {
-      color: #ffffff;
-      font-weight: bold;
+    .reset-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
     }
   </style>
 </head>
@@ -222,14 +246,15 @@
       <div class="card"><h3>ثوانٍ</h3><div class="value" id="seconds">—</div></div>
     </div>
 
-    <div class="dua-section">
-      <div class="dua-title">إهداء ثواب الاستغفار والدعاء للمرحوم</div>
-      <p style="color: #d1d5db; font-size: 0.95rem;">اضغط على الزر أدناه لاستغفارٍ يدخل نوره إلى قبره بإذن الله:</p>
-      <button class="dua-btn" onclick="addDua()">أستغفر الله العظيم وأتوب إليه 🤲</button>
-      
-      <div class="dua-counters-box">
-        <div class="dua-count-text">إجمالي الاستغفار الكلي من كافة الزوار: <br><span class="dua-count-num" id="duaCounter">جاري التحميل...</span> استغفارة</div>
-        <div class="dua-count-text" style="font-size: 0.88rem; opacity: 0.8;">استغفارك أنت في هذه الصفحة: <span class="personal-count-num" id="personalCounter">0</span></div>
+    <!-- المسبحة الإلكترونية -->
+    <div class="tasbeeh-container">
+      <div class="tasbeeh-screen">
+        <div class="tasbeeh-label">عداد الاستغفار الإلكتروني</div>
+        <div class="tasbeeh-display" id="tasbeehCounter">0</div>
+      </div>
+      <div class="tasbeeh-buttons">
+        <button class="count-btn" onclick="incrementTasbeeh()">استغفر الله 🤲</button>
+        <button class="reset-btn" onclick="resetTasbeeh()">تصفير</button>
       </div>
     </div>
   </div>
@@ -290,68 +315,29 @@
       document.getElementById("timeSentence").textContent = sentence;
     }
 
-    // --- سيرفر العداد العالمي والدائم ---
-    const API_URL = "https://api.countapi.xyz/hit/ghiyath_somadi_memorial_2026/staghfar_total";
-    const GET_URL = "https://api.countapi.xyz/get/ghiyath_somadi_memorial_2026/staghfar_total";
+    // --- منطق المسبحة الإلكترونية المحلية ---
+    let tasbeehCount = parseInt(localStorage.getItem('my_staghfar_count')) || 0;
+    const displayElement = document.getElementById("tasbeehCounter");
     
-    // سيرفر احتياطي دائم في حال توقف الأول
-    const BACKUP_URL = "https://countapi.deta.dev/hit/ghiyath_somadi_memorial";
+    displayElement.textContent = new Intl.NumberFormat("en-US").format(tasbeehCount);
 
-    let globalTotal = 0;
-    let personalCount = parseInt(localStorage.getItem('my_staghfar_count')) || 0;
-    document.getElementById("personalCounter").textContent = new Intl.NumberFormat("en-US").format(personalCount);
-
-    function formatNumber(num) {
-      return new Intl.NumberFormat("en-US").format(num);
+    function incrementTasbeeh() {
+      tasbeehCount++;
+      localStorage.setItem('my_staghfar_count', tasbeehCount);
+      displayElement.textContent = new Intl.NumberFormat("en-US").format(tasbeehCount);
     }
 
-    // جلب الإجمالي من السيرفر
-    function fetchGlobalCount() {
-      fetch(GET_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (data && typeof data.value === 'number') {
-            globalTotal = data.value;
-            document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
-          }
-        })
-        .catch(err => {
-          // محاولة جلب بديلة
-          fetch("https://api.moesif.com/v1/staghfar_ghiyath_somadi")
-            .catch(() => {});
-        });
+    function resetTasbeeh() {
+      if (confirm("هل تريد تصفير عداد المسبحة؟")) {
+        tasbeehCount = 0;
+        localStorage.setItem('my_staghfar_count', tasbeehCount);
+        displayElement.textContent = tasbeehCount;
+      }
     }
 
-    // إضافة استغفار
-    function addDua() {
-      // 1. زيادة العداد الشخصي
-      personalCount++;
-      localStorage.setItem('my_staghfar_count', personalCount);
-      document.getElementById("personalCounter").textContent = formatNumber(personalCount);
-
-      // 2. زياده العداد الكلي فورياً في الشاشة
-      globalTotal++;
-      document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
-
-      // 3. حفظ وإرسال الضغطة للسيرفر ليتراكم مع باقي الزوار
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (data && typeof data.value === 'number') {
-            globalTotal = data.value;
-            document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
-          }
-        })
-        .catch(err => console.log("تم الحفظ محلياً"));
-    }
-
-    // تشغيل الحسابات التلقائية
+    // تشغيل العداد الزمني
     updateAll();
     setInterval(updateAll, 1000);
-
-    // جلب الإجمالي والتحديث التلقائي كل 4 ثوانٍ
-    fetchGlobalCount();
-    setInterval(fetchGlobalCount, 4000);
   </script>
 </body>
 </html>
