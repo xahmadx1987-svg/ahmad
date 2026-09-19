@@ -154,14 +154,15 @@
       background: linear-gradient(135deg, #c59b27, #8a6d1b);
       color: #fff;
       border: none;
-      padding: 12px 28px;
-      font-size: 1.05rem;
+      padding: 14px 32px;
+      font-size: 1.1rem;
       font-family: "Cairo", sans-serif;
       border-radius: 30px;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
       margin-top: 10px;
       transition: all 0.2s ease;
+      user-select: none;
     }
 
     .dua-btn:active {
@@ -169,19 +170,20 @@
     }
 
     .dua-counters-box {
-      margin-top: 15px;
+      margin-top: 18px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .dua-count-text {
       color: #9ca3af;
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
 
     .dua-count-num {
       color: #d4af37;
+      font-size: 1.4rem;
       font-weight: bold;
     }
     
@@ -226,8 +228,8 @@
       <button class="dua-btn" onclick="addDua()">أستغفر الله العظيم وأتوب إليه 🤲</button>
       
       <div class="dua-counters-box">
-        <div class="dua-count-text">استغفارك الشخصي: <span class="personal-count-num" id="personalCounter">0</span> استغفارة</div>
-        <div class="dua-count-text">إجمالي الاستغفار الكلي من جميع الزوار: <span class="dua-count-num" id="duaCounter">...</span> استغفارة</div>
+        <div class="dua-count-text">إجمالي الاستغفار الكلي من كافة الزوار: <br><span class="dua-count-num" id="duaCounter">جاري التحميل...</span> استغفارة</div>
+        <div class="dua-count-text" style="font-size: 0.88rem; opacity: 0.8;">استغفارك أنت في هذه الصفحة: <span class="personal-count-num" id="personalCounter">0</span></div>
       </div>
     </div>
   </div>
@@ -288,55 +290,68 @@
       document.getElementById("timeSentence").textContent = sentence;
     }
 
-    // --- العداد الشخصي والعداد العام المشترك ---
-    const API_URL = "https://api.counterapi.dev/v1/ghiyath_somadi_memorial_counter/staghfar";
+    // --- سيرفر العداد العالمي والدائم ---
+    const API_URL = "https://api.countapi.xyz/hit/ghiyath_somadi_memorial_2026/staghfar_total";
+    const GET_URL = "https://api.countapi.xyz/get/ghiyath_somadi_memorial_2026/staghfar_total";
     
-    // استرجاع العداد الشخصي المخزن في متصفح الزائر إن وجد
+    // سيرفر احتياطي دائم في حال توقف الأول
+    const BACKUP_URL = "https://countapi.deta.dev/hit/ghiyath_somadi_memorial";
+
+    let globalTotal = 0;
     let personalCount = parseInt(localStorage.getItem('my_staghfar_count')) || 0;
     document.getElementById("personalCounter").textContent = new Intl.NumberFormat("en-US").format(personalCount);
 
-    // جلب الرقم الإجمالي العام من السيرفر
+    function formatNumber(num) {
+      return new Intl.NumberFormat("en-US").format(num);
+    }
+
+    // جلب الإجمالي من السيرفر
     function fetchGlobalCount() {
+      fetch(GET_URL)
+        .then(res => res.json())
+        .then(data => {
+          if (data && typeof data.value === 'number') {
+            globalTotal = data.value;
+            document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
+          }
+        })
+        .catch(err => {
+          // محاولة جلب بديلة
+          fetch("https://api.moesif.com/v1/staghfar_ghiyath_somadi")
+            .catch(() => {});
+        });
+    }
+
+    // إضافة استغفار
+    function addDua() {
+      // 1. زيادة العداد الشخصي
+      personalCount++;
+      localStorage.setItem('my_staghfar_count', personalCount);
+      document.getElementById("personalCounter").textContent = formatNumber(personalCount);
+
+      // 2. زياده العداد الكلي فورياً في الشاشة
+      globalTotal++;
+      document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
+
+      // 3. حفظ وإرسال الضغطة للسيرفر ليتراكم مع باقي الزوار
       fetch(API_URL)
         .then(res => res.json())
         .then(data => {
-          if (data && typeof data.count === 'number') {
-            document.getElementById("duaCounter").textContent = new Intl.NumberFormat("en-US").format(data.count);
+          if (data && typeof data.value === 'number') {
+            globalTotal = data.value;
+            document.getElementById("duaCounter").textContent = formatNumber(globalTotal);
           }
         })
-        .catch(err => console.log("جاري التحديث..."));
+        .catch(err => console.log("تم الحفظ محلياً"));
     }
 
-    // عند اضغط الزائر على زر الاستغفار
-    function addDua() {
-      // 1. تحديث العداد الشخصي للزائر وحفظه بالمتصفح
-      personalCount++;
-      localStorage.setItem('my_staghfar_count', personalCount);
-      document.getElementById("personalCounter").textContent = new Intl.NumberFormat("en-US").format(personalCount);
-
-      // 2. تحديث العداد الكلي العام فورياً على الشاشة
-      let globalElement = document.getElementById("duaCounter");
-      let currentGlobalVal = parseInt(globalElement.textContent.replace(/,/g, '')) || 0;
-      globalElement.textContent = new Intl.NumberFormat("en-US").format(currentGlobalVal + 1);
-
-      // 3. إرسال الزيادة للسيرفر العام لتصل لكل الزوار
-      fetch(API_URL + "/up")
-        .then(res => res.json())
-        .then(data => {
-          if (data && typeof data.count === 'number') {
-            globalElement.textContent = new Intl.NumberFormat("en-US").format(data.count);
-          }
-        })
-        .catch(err => console.error("خطأ التحديث", err));
-    }
-
-    // تشغيل حسابات وقت الوفاة
+    // تشغيل الحسابات التلقائية
     updateAll();
     setInterval(updateAll, 1000);
 
-    // تحميل العداد العام عند الفتح وتحديثه كل 5 ثوانٍ تلقائياً
+    // جلب الإجمالي والتحديث التلقائي كل 4 ثوانٍ
     fetchGlobalCount();
-    setInterval(fetchGlobalCount, 5000);
+    setInterval(fetchGlobalCount, 4000);
   </script>
 </body>
 </html>
